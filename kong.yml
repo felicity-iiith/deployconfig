@@ -1,0 +1,87 @@
+version: "3"
+
+services:
+  # Kong can use cassandra or postgres. Cassandra was taking a little too
+  # much RAM.
+  kong-db:
+    image: postgres:9.4
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: ${KONG_POSTGRES_PASSWORD}
+    # Do not expose the ports unless you actually need to use the databse
+    # from other networks.
+    # ports:
+    #   - "5432:5432"
+    deploy:
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 1G
+
+  # This container quits after initializing the database. So, make sure
+  # restart condition is always set to 'on-failure'.
+  kong-migration:
+    image: felicityiiith/kong
+    depends_on:
+      - kong-db
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-db
+      KONG_PG_DATABSE: kong
+      KONG_PG_PASSWORD: ${KONG_POSTGRES_PASSWORD}
+    command: kong migrations up
+    deploy:
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+
+  # Master kong container.
+  kong:
+    image: felicityiiith/kong
+    depends_on:
+      - kong-db
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-db
+      KONG_PG_PASSWORD: ${KONG_POSTGRES_PASSWORD}
+      KONG_PG_DATABASE: kong
+      # Custom plugins should be added here. Default ones can be set using
+      # admin API or admin dashboard.
+      KONG_CUSTOM_PLUGINS: oidc
+      # Kong will be receiving requests from Yui's HAproxy. So, this
+      # should be set to X-Real-Client-IPr for rate limiting plugin to work.
+      KONG_REAL_IP_HEADER: X-Real-Client-IP
+    ports:
+      - "8000:8000"
+    deploy:
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 1G
+
+  # Kong Admin Dashboard.
+  kong-dashboard:
+    image: pgbi/kong-dashboard
+    depends_on:
+      - kong
+    ports:
+      - 9000:8080
+    # Add more users by appending user=password
+    # You might also want to try kong:8444. But who will monitor packets
+    # inside docker network? :P
+    command: start --kong-url http://kong:8001 --basic-auth admin=${KONG_ADMIN_PASSWORD}
+    deploy:
+      restart_policy:
+        condition: any
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 200M
