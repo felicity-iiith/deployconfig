@@ -18,3 +18,8 @@
 # End of https://www.gitignore.io/api/linux
 
 prod.env
+
+# portals
+portals.yml
+portals_initdb.sql
+portals_passwords.yml

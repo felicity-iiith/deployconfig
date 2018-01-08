@@ -28,3 +28,16 @@ Prod
 dotenv prod.env
 docker stack deploy -c auth.yml auth
 ```
+
+# Directory Structure
+```
+.
+├── deployconfig
+└── portals
+    ├── portal_1
+    │   ├── backend
+    │   └── frontend
+    └── portal_2
+        ├── backend
+        └── frontend
+```

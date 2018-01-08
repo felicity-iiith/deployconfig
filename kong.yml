@@ -85,3 +85,24 @@ services:
         limits:
           cpus: "0.25"
           memory: 200M
+
+  ########## CONTEST SERVICES ##########
+
+  portaldb:
+    image: mariadb:10
+    volumes:
+      - portaldb:/var/lib/mysql
+      - ./portals_initdb.sql:/docker-entrypoint-initdb.d/portals_initdb.sql
+    environment:
+      # Make root password instead of random root password for backup since no sqldumps
+      MYSQL_ROOT_PASSWORD: ${KONG_PORTALDB_ROOT_PASSWORD}
+
+  portaladmin:
+    image: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: portaldb
+    ports:
+      - 9001:8080
+
+volumes:
+  portaldb:
