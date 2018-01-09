@@ -21,26 +21,6 @@ services:
           cpus: "0.25"
           memory: 1G
 
-  # This container quits after initializing the database. So, make sure
-  # restart condition is always set to 'on-failure'.
-  kong-migration:
-    image: felicityiiith/kong
-    depends_on:
-      - kong-db
-    environment:
-      KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-db
-      KONG_PG_DATABSE: kong
-      KONG_PG_PASSWORD: ${KONG_POSTGRES_PASSWORD}
-    command: kong migrations up
-    deploy:
-      restart_policy:
-        condition: on-failure
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
-
   # Master kong container.
   kong:
     image: felicityiiith/kong
