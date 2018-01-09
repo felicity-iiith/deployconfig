@@ -3,7 +3,7 @@ version: "3"
 services:
   # Kong can use cassandra or postgres. Cassandra was taking a little too
   # much RAM.
-  kong-db:
+  kongdb:
     image: postgres:9.4
     environment:
       POSTGRES_USER: kong
@@ -25,10 +25,10 @@ services:
   kong:
     image: felicityiiith/kong
     depends_on:
-      - kong-db
+      - kongdb
     environment:
       KONG_DATABASE: postgres
-      KONG_PG_HOST: kong-db
+      KONG_PG_HOST: kongdb
       KONG_PG_PASSWORD: ${KONG_POSTGRES_PASSWORD}
       KONG_PG_DATABASE: kong
       # Custom plugins should be added here. Default ones can be set using
@@ -38,7 +38,7 @@ services:
       # should be set to X-Real-Client-IPr for rate limiting plugin to work.
       KONG_REAL_IP_HEADER: X-Real-Client-IP
     ports:
-      - "8000:8000"
+      - "9000:8000"
     deploy:
       restart_policy:
         condition: any
@@ -48,12 +48,12 @@ services:
           memory: 1G
 
   # Kong Admin Dashboard.
-  kong-dashboard:
+  kong_dashboard:
     image: pgbi/kong-dashboard
     depends_on:
       - kong
     ports:
-      - 9000:8080
+      - 9001:8080
     # Add more users by appending user=password
     # You might also want to try kong:8444. But who will monitor packets
     # inside docker network? :P
@@ -82,7 +82,7 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: portaldb
     ports:
-      - 9001:8080
+      - 9002:8080
 
 volumes:
   portaldb:

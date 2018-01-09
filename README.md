@@ -41,3 +41,7 @@ docker stack deploy -c auth.yml auth
         ├── backend
         └── frontend
 ```
+
+# Ports
+- 8*** auth
+- 9*** portals
