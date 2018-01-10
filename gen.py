@@ -44,7 +44,12 @@ for portal in portals:
     services[portal + '_backend'] = {
         "image": "node:8",
         "working_dir": "/home/node/app",
-        "environment": [ "NODE_ENV=production", "DBURI=mysql://%s:%s@portaldb/%s" % (portal, getPassword(portal), portal)],
+        "environment": [
+            "NODE_ENV=production",
+            "DBURI=mysql://%s:%s@portaldb/%s" % (portal, getPassword(portal), portal),
+            "PUBLIC_API_URL=https://felicity.iiit.ac.in/k/%s/api" % portal,
+            "PUBLIC_FRONTEND_URL=https://felicity.iiit.ac.in/k/%s" % portal,
+        ],
         "volumes": [ "../portals/%s/backend:/home/node/app" % portal ],
         "command": "bash -c 'yarn install && yarn start'"
     }
