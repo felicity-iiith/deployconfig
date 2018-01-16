@@ -21,6 +21,16 @@ def getPassword(portal):
 os.chdir('../portals')
 
 portals = [ portal for portal in os.listdir('./') if os.path.isdir(portal) ]
+portalconfig = {}
+
+print("\n=============== Reading config ===============\n")
+for portal in portals:
+    print("\n##### " + portal + "\n")
+    try:
+        portalconfig[portal] = yaml.load(open(portal + '/config.yml'))
+    except Exception:
+        portalconfig[portal] = {}
+
 
 print("\n=============== Building frontend ===============\n")
 for portal in portals:
@@ -41,6 +51,10 @@ print("FLUSH PRIVILEGES;", file=initdbfile)
 print("\n=============== Making docker compose file ===============\n")
 services = {}
 for portal in portals:
+    extraenv = []
+    for key, value in portalconfig[portal].iteritems():
+        extraenv.append("%s=\"%s\"" % (key, value))
+
     services[portal + '_backend'] = {
         "image": "node:8",
         "working_dir": "/home/node/app",
@@ -49,7 +63,7 @@ for portal in portals:
             "DBURI=mysql://%s:%s@portaldb/%s" % (portal, getPassword(portal), portal),
             "PUBLIC_API_URL=https://felicity.iiit.ac.in/k/%s/api" % portal,
             "PUBLIC_FRONTEND_URL=https://felicity.iiit.ac.in/k/%s" % portal,
-        ],
+        ] + extraenv,
         "volumes": [ "../portals/%s/backend:/home/node/app" % portal ],
         "command": "bash -c 'yarn install && yarn start'"
     }
