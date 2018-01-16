@@ -84,5 +84,12 @@ services:
     ports:
       - 9002:8080
 
+  portaladmineditor:
+    image: frans/adminer-editor
+    environment:
+      ADMINER_DEFAULT_SERVER: portaldb
+    ports:
+      - 9003:8080
+
 volumes:
   portaldb:
