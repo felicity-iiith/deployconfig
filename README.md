@@ -33,6 +33,7 @@ docker stack deploy -c auth.yml auth
 ```
 .
 ├── deployconfig
+├── misc_portals
 └── portals
     ├── portal_1
     │   ├── backend

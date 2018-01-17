@@ -79,5 +79,7 @@ os.chdir('../deployconfig')
 
 kongconf = yaml.load(open('kong.yml'))
 kongconf['services'].update(services)
+misc_portals = yaml.load(open('misc_portals.yml'))
+kongconf['services'].update(misc_portals)
 yaml.dump(kongconf, open('portals.yml', 'w'), default_flow_style=False)
 yaml.dump(passwords, open('portals_passwords.yml', 'w'), default_flow_style=False)
