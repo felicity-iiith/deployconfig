@@ -14,7 +14,10 @@ files_upload:
   working_dir: /home/node/app
   volumes:
     - ../misc_portals/files:/home/node/app
+  ports:
+    - 9004:8080
   environment:
-    - NODE_ENV=production
-    - PUBLIC_FRONTEND_URL=https://felicity.iiit.ac.in/k/files
+    NODE_ENV: production
+    PUBLIC_FRONTEND_URL: https://felicity.iiit.ac.in/k/files
+    PASSWORD: ${KONG_FILE_UPLOAD_PASSWORD}
   command: bash -c 'yarn install && yarn start'
