@@ -53,7 +53,7 @@ services = {}
 for portal in portals:
     extraenv = []
     for key, value in portalconfig[portal].iteritems():
-        extraenv.append("%s=\"%s\"" % (key, value))
+        extraenv.append("%s=%s" % (key, value))
 
     services[portal + '_backend'] = {
         "image": "node:8",
