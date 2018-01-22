@@ -34,6 +34,8 @@ for portal in portals:
 
 print("\n=============== Building frontend ===============\n")
 for portal in portals:
+    if os.environ.get('ONLY_BUILD') and os.environ['ONLY_BUILD'] != portal:
+        continue
     print("\n##### " + portal + "\n")
     os.chdir(portal + "/frontend")
     os.system("yarn install")
