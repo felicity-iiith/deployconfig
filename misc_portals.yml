@@ -21,3 +21,21 @@ files_upload:
     PUBLIC_FRONTEND_URL: https://felicity.iiit.ac.in/k/files
     PASSWORD: ${KONG_FILE_UPLOAD_PASSWORD}
   command: bash -c 'yarn install && yarn start'
+
+
+pulseup_backend:
+  image: python:3
+  volumes:
+    - ../misc_portals/pulseup/backend:/app
+  ports:
+    - 9876:8080
+  command: bash -c "cd /app && pip install uwsgi && pip install -r pulseup/requirements.txt && python manage.py makemigrations && python manage.py migrate && uwsgi --ini uwsgi.ini"
+
+pulseup_frontend:
+  image: node:8
+  working_dir: "/home/node/app"
+  environment:
+    - "NODE_ENV=production"
+  volumes:
+    - "../misc_portals/pulseup/frontend/build:/home/node/app"
+  command: "bash -c 'yarn global add serve && serve -s'"
