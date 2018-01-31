@@ -46,3 +46,5 @@ docker stack deploy -c auth.yml auth
 # Ports
 - 8*** auth
 - 9*** portals
+- 7*** mailtrain
+- 10*** h5ai
