@@ -1,0 +1,34 @@
+version: '3'
+
+# Adopted from the official one from here
+# https://github.com/osixia/mailtrain/blob/master/docker-compose.yml
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=mailtrain
+      - MYSQL_DATABASE=mailtrain
+      - MYSQL_USER=mailtrain
+      - MYSQL_PASSWORD=${MAILTRAIN_MYSQL_PASSWORD}
+    volumes:
+      - mailtrain-mysq-data:/var/lib/mysql
+
+  redis:
+    image: redis:3.0
+    volumes:
+      - mailtrain-redis-data:/data
+
+  mailtrain:
+    image: osixia/mailtrain:master
+    volumes:
+      - ./mailtrain/production.toml:/app/config/production.toml
+    ports:
+      - 7000:3000
+
+volumes:
+  mailtrain-mysq-data:
+  mailtrain-redis-data:
+  mailtrain-node-data:
+  mailtrain-node-reports:

@@ -23,3 +23,6 @@ prod.env
 portals.yml
 portals_initdb.sql
 portals_passwords.yml
+
+# mailtrain
+mailtrain/production.toml
