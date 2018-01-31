@@ -1,0 +1,12 @@
+version: '3'
+
+# Temporary file host
+
+services:
+
+  h5ai:
+    image: bixidock/h5ai
+    ports:
+      - 10000:8080
+    volumes:
+      - "/data/felidata:/var/www"
