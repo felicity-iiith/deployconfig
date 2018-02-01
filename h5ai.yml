@@ -5,8 +5,8 @@ version: '3'
 services:
 
   h5ai:
-    image: bixidock/h5ai
+    image: jarlave/docker-h5ai
     ports:
-      - 10000:8080
+      - 10000:80
     volumes:
-      - "/data/felidata:/var/www"
+      - "/data/felidata:/var/www/html/user_home:ro"
