@@ -37,9 +37,12 @@ for portal in portals:
     if os.environ.get('ONLY_BUILD') and os.environ['ONLY_BUILD'] != portal:
         continue
     print("\n##### " + portal + "\n")
+    extraenv = ''
+    for key, value in portalconfig[portal].iteritems():
+        extraenv += "%s=\"%s\" " % (key, value)
     os.chdir(portal + "/frontend")
     os.system("yarn install")
-    os.system("INFERNO_APP_BACKEND_URL=/k/{0}/api PUBLIC_URL='/k/{0}/' yarn build".format(portal))
+    os.system(extraenv + "INFERNO_APP_BACKEND_URL=/k/{0}/api PUBLIC_URL='/k/{0}/' yarn build".format(portal))
     os.chdir("../../")
 
 print("\n=============== Making MySQL init file ===============\n")
